@@ -1,0 +1,3 @@
+target/
+data/entrypack-*.json.gz
+Cargo.lock

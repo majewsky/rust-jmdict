@@ -1,0 +1,48 @@
+name: tests
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        featureset:
+          # common builds
+          - '--features full'
+          - '--features default'
+          - '--features scope-uncommon'
+          - '--features scope-uncommon,scope-archaic'
+          # development builds
+          - '--features db-minimal'
+          - '--features db-minimal,scope-uncommon'
+          - '--features db-minimal,scope-uncommon,scope-archaic'
+          # builds without English glosses
+          - '--no-default-features --features translations-dut'
+          - '--no-default-features --features translations-fre'
+          - '--no-default-features --features translations-ger'
+          - '--no-default-features --features translations-hun'
+          - '--no-default-features --features translations-rus'
+          - '--no-default-features --features translations-slv'
+          - '--no-default-features --features translations-spa'
+          - '--no-default-features --features translations-swe'
+          - '--no-default-features --features translations-dut,scope-uncommon,scope-archaic'
+          - '--no-default-features --features translations-fre,scope-uncommon,scope-archaic'
+          - '--no-default-features --features translations-ger,scope-uncommon,scope-archaic'
+          - '--no-default-features --features translations-hun,scope-uncommon,scope-archaic'
+          - '--no-default-features --features translations-rus,scope-uncommon,scope-archaic'
+          - '--no-default-features --features translations-slv,scope-uncommon,scope-archaic'
+          - '--no-default-features --features translations-spa,scope-uncommon,scope-archaic'
+          - '--no-default-features --features translations-swe,scope-uncommon,scope-archaic'
+    steps:
+      - uses: actions/checkout@v2
+      - name: build
+        run: cargo build --verbose ${{ matrix.featureset }}
+      - name: test
+        run: cargo test --verbose ${{ matrix.featureset }}
