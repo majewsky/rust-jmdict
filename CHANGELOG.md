@@ -1,4 +1,4 @@
-# Unreleased
+# v1.0.0 (2021-04-18)
 
 Initial stable release. No changes from v0.99.1.
 
