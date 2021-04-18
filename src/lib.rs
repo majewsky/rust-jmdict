@@ -341,9 +341,9 @@ wrap_iterator!(&'static str, 2, Strings);
 wrap_iterator!(PartOfSpeech, 1, PartsOfSpeech);
 wrap_iterator!(SenseTopic, 1, SenseTopics);
 wrap_iterator!(SenseInfo, 1, SenseInfos);
-wrap_iterator!(LoanwordSource, 5, LoanwordSources);
+wrap_iterator!(LoanwordSource, 4, LoanwordSources);
 wrap_iterator!(Dialect, 1, Dialects);
-wrap_iterator!(Gloss, 3, Glosses);
+wrap_iterator!(Gloss, 2, Glosses);
 
 ///An iterator providing fast access to objects in the database. Instances of this iterator
 ///can be copied cheaply.

@@ -277,7 +277,7 @@ impl ToPayload for jmdict_traverse::RawSense<'_> {
 
 impl ToPayload for jmdict_traverse::RawLSource<'_> {
     fn size() -> usize {
-        5
+        4
     }
 
     fn encode_one(&self, omni: &mut OmniBuffer, buf: &mut [u32]) {
@@ -287,26 +287,29 @@ impl ToPayload for jmdict_traverse::RawLSource<'_> {
         let r = omni.push_str(self.lang);
         buf[2] = r.start;
         buf[3] = r.end;
-        buf[4] = 0;
+        //`omni.text` is significantly shorter than 2^28 bytes, so we can shove those two booleans
+        //into the highest bits of one of the offset values
         if self.is_partial {
-            buf[4] |= 0x1;
+            buf[0] |= 0x10000000;
         }
         if self.is_wasei {
-            buf[4] |= 0x2;
+            buf[0] |= 0x20000000;
         }
     }
 }
 
 impl ToPayload for jmdict_traverse::RawGloss<'_> {
     fn size() -> usize {
-        3
+        2
     }
 
     fn encode_one(&self, omni: &mut OmniBuffer, buf: &mut [u32]) {
+        //`omni.text` is never larger than 30-40 MiB. That's slightly more than 2^24 bytes, but
+        //comfortably below 2^28 bytes. We can therefore use the upper 4 bits of `buf[0]` and
+        //`buf[1]`, respectively, to encode `self.lang` and `self.g_type`.
         let r = omni.push_str(self.text);
-        buf[0] = r.start;
-        buf[1] = r.end;
-        buf[2] = self.lang.to_u32() | (self.g_type.to_u32() << 16);
+        buf[0] = r.start | (self.lang.to_u32() << 28);
+        buf[1] = r.end | (self.g_type.to_u32() << 28);
     }
 }
 

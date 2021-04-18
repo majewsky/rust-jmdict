@@ -167,13 +167,13 @@ impl FromPayload<1> for SenseInfo {
     }
 }
 
-impl FromPayload<5> for LoanwordSource {
-    fn get(data: &[u32; 5]) -> Self {
+impl FromPayload<4> for LoanwordSource {
+    fn get(data: &[u32; 4]) -> Self {
         Self {
-            text: get_str(data[0], data[1]),
+            text: get_str(data[0] & 0x0FFFFFFF, data[1]),
             language: get_str(data[2], data[3]),
-            is_partial: (data[4] & 0x1) == 0x1,
-            is_wasei: (data[4] & 0x2) == 0x2,
+            is_partial: (data[0] & 0x10000000) == 0x10000000,
+            is_wasei: (data[0] & 0x20000000) == 0x20000000,
         }
     }
 }
@@ -184,12 +184,12 @@ impl FromPayload<1> for Dialect {
     }
 }
 
-impl FromPayload<3> for Gloss {
-    fn get(data: &[u32; 3]) -> Self {
-        let lang_code = data[2] & 0x0000FFFF;
-        let type_code = (data[2] & 0xFFFF0000) >> 16;
+impl FromPayload<2> for Gloss {
+    fn get(data: &[u32; 2]) -> Self {
+        let lang_code = (data[0] & 0xF0000000) >> 28;
+        let type_code = (data[1] & 0xF0000000) >> 28;
         Gloss {
-            text: get_str(data[0], data[1]),
+            text: get_str(data[0] & 0x0FFFFFFF, data[1] & 0x0FFFFFFF),
             language: jmdict_enums::EnumPayload::from_u32(lang_code),
             gloss_type: jmdict_enums::EnumPayload::from_u32(type_code),
         }
