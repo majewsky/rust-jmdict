@@ -7,7 +7,7 @@ members = [
 
 [package]
 name = "jmdict"
-version = "0.1.0"
+version = "0.99.1"
 authors = [
   # implementation
   "Stefan Majewsky <majewsky@gmx.net>",
@@ -29,14 +29,14 @@ exclude = [
 
 [dependencies]
 align-data = "^0.1.0"
-jmdict-enums = { path = "jmdict-enums", version = "0.1.0" }
+jmdict-enums = { path = "jmdict-enums", version = "0.99.1" }
 
 [build-dependencies]
-jmdict-enums = { path = "jmdict-enums", version = "0.1.0" }
-jmdict-traverse = { path = "jmdict-traverse", version = "0.1.0" }
+jmdict-enums = { path = "jmdict-enums", version = "0.99.1" }
+jmdict-traverse = { path = "jmdict-traverse", version = "0.99.1" }
 
 [dev-dependencies]
-jmdict-traverse = { path = "jmdict-traverse", version = "0.1.0" }
+jmdict-traverse = { path = "jmdict-traverse", version = "0.99.1" }
 
 [features]
 default = [

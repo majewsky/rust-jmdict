@@ -1,6 +1,6 @@
 [package]
 name = "jmdict-traverse"
-version = "0.1.0"
+version = "0.99.1"
 authors = ["Stefan Majewsky <majewsky@gmx.net>"]
 edition = "2018"
 description = "Build system support for the jmdict crate. Do not import directly."
@@ -9,7 +9,7 @@ homepage = "https://github.com/majewsky/rust-jmdict/tree/main/jmdict-traverse"
 license = "Apache-2.0"
 
 [dependencies]
-jmdict-enums = { path = "../jmdict-enums", version = "0.1.0" }
+jmdict-enums = { path = "../jmdict-enums", version = "0.99.1" }
 directories = "^3"
 hex-literal = "^0.3"
 libflate = "^1"
