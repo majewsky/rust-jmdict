@@ -4,6 +4,8 @@ Issues and PRs are welcome, but I cannot give any specific guarantees how fast I
 
 * If the copy of JMdict is outdated and you need a newer version, open an issue and I'll make a new release with a newer
   copy for you. Please don't send a PR for this; I have no way to verify the diff and will do the import myself anyway.
+* When making changes, please also add entries to `CHANGELOG.md` to describe your change, in the topmost "Unreleased"
+  section. (If a release was recently made and there is no "Unreleased" section, start one.)
 
 # Explanations
 
