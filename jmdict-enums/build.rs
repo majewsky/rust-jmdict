@@ -439,6 +439,28 @@ fn process(e: Enum) -> String {
     lines.push("        }".into());
     lines.push("    }\n".into());
 
+    //fn from_constant_name(&str) -> Self
+    lines.push("    fn from_constant_name(text: &str) -> Option<Self> {".into());
+    lines.push("        match text {".into());
+    for v in e.variants.iter().filter(|v| v.enabled) {
+        lines.push(format!(
+            "            \"{}\" => Some({}::{}),",
+            v.name, e.name, v.name
+        ));
+    }
+    lines.push("            _ => None,".into());
+    lines.push("        }".into());
+    lines.push("    }\n".into());
+
+    //fn all_variants() -> &'static [Self]
+    lines.push("    fn all_variants() -> &'static [Self] {".into());
+    lines.push("        &[".into());
+    for v in e.variants.iter().filter(|v| v.enabled) {
+        lines.push(format!("            {}::{},", e.name, v.name));
+    }
+    lines.push("        ]".into());
+    lines.push("    }\n".into());
+
     //end impl Enum
     lines.push("}\n".into());
 

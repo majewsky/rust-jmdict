@@ -12,6 +12,11 @@ JMdict was updated to 2021-09-17. This requires the following changes in enum va
 - added `SenseTopic::Psychiatry`
 - added `SenseTopic::Railway`
 
+Further changes:
+
+- The `all_variants()` method was added to `trait Enum`.
+- The `from_constant_name()` method was added to `trait Enum`.
+
 # v1.0.0 (2021-04-18)
 
 Initial stable release. No changes from v0.99.1.

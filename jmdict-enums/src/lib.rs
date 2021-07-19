@@ -43,6 +43,10 @@ pub trait EnumPayload {
 
 ///Common methods provided by all enums in this crate.
 pub trait Enum: Sized {
+    ///Returns a list of all variant values in this enum. No particular order is guaranteed or
+    ///implied.
+    fn all_variants() -> &'static [Self];
+
     ///Returns the string that marks this enum variant in the JMdict. For values that JMdict
     ///represents as XML entities, only the entity name is returned, e.g. `adj-n` instead of
     ///`&adj-n;`.
@@ -55,6 +59,11 @@ pub trait Enum: Sized {
     ///Returns the variant name. This is used to generate Rust code for this enum. The `impl
     ///Display` for enums uses this same representation.
     fn constant_name(&self) -> &'static str;
+
+    ///Returns the variant that is identified the given name in Rust code, or `None` if there is no
+    ///such variant. This is the reverse of `self.constant_name()`, i.e.
+    ///`Self::from_constant_name(self.constant_name()) == Some(self)`.
+    fn from_constant_name(name: &str) -> Option<Self>;
 }
 
 ///PriorityInCorpus appears in struct [Priority]. It describes how often a dictionary entry
