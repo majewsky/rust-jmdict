@@ -7,9 +7,9 @@
 use hex_literal::hex;
 use std::path::PathBuf;
 
-const ENTRYPACK_URL: &str = "https://dl.xyrillian.de/jmdict/entrypack-v1-2021-04-13.json.gz";
+const ENTRYPACK_URL: &str = "https://dl.xyrillian.de/jmdict/entrypack-v1-2021-07-19.json.gz";
 const ENTRYPACK_SHA256SUM: [u8; 32] =
-    hex!("9b92671745758a07528a7b9a057c9d4726709b539707786bd281179fd3a4eac3");
+    hex!("6d539f6b1841c213815ec9daa89bf9e5c1046e627f96db50ce800e995c1ca9ca");
 
 pub struct EntryPack {
     pub path: PathBuf,
