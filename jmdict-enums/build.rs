@@ -390,6 +390,7 @@ fn process(e: Enum) -> String {
     //enum declaration
     lines.push(format!("/// {}", e.doc));
     lines.push("#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]".into());
+    lines.push("#[non_exhaustive]".into());
     lines.push(format!("pub enum {} {{", e.name));
     for v in e.variants.iter().filter(|v| v.enabled) {
         if let Some(ref entities) = e.entities {

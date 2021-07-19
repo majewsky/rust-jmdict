@@ -1,3 +1,9 @@
+# v3.0.0 (TBD)
+
+Changes:
+
+- All enums are now marked as non-exhaustive, since the JMdict tends to add more variants as time goes on.
+
 # v2.0.0 (2021-07-19)
 
 JMdict was updated to 2021-09-17. This requires the following changes in enum variants:
