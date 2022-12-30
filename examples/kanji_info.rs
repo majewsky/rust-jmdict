@@ -8,8 +8,8 @@ fn main() {
     let count = jmdict::entries()
         .filter(|e| {
             if e.kanji_elements().any(|k| k.text == input) {
-                // note two entries have identical Kanji and reading
-                // yet differ in "sense" not shown in this example
+                // note two entries have identical Kanji  
+                // yet differ in reading
                 println!("--- entry #{} ---", e.number);
                 for kanji in e.kanji_elements() {
                     println!("kanji element: {}", kanji.text);
