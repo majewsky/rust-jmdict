@@ -43,7 +43,7 @@ impl<T: FromPayload<N>, const N: usize> std::iter::Iterator for Range<T, N> {
 
     fn next(&mut self) -> Option<Self::Item> {
         if self.start < self.end {
-            let data = &as_u32_slice(ALL_DATA)[self.start..(self.start + N)];
+            let data = &ALL_DATA[self.start..(self.start + N)];
             let item = T::get(data.try_into().unwrap());
             self.start += N;
             Some(item)
@@ -68,12 +68,12 @@ impl<T: FromPayload<N>, const N: usize> std::iter::ExactSizeIterator for Range<T
 // concrete types
 
 pub(crate) fn entry_count() -> usize {
-    as_u32_slice(ALL_ENTRY_OFFSETS).len()
+    ALL_ENTRY_OFFSETS.len()
 }
 
 pub(crate) fn get_entry(idx: usize) -> Entry {
-    let offset: usize = as_u32_slice(ALL_ENTRY_OFFSETS)[idx].try_into().unwrap();
-    let data = &as_u32_slice(ALL_DATA)[offset..(offset + 4)];
+    let offset: usize = ALL_ENTRY_OFFSETS[idx].try_into().unwrap();
+    let data = &ALL_DATA[offset..(offset + 4)];
 
     let (start, end) = (data[0], data[1]);
     let mid1 = start + (data[2] & 0x0000FFFF);
@@ -213,20 +213,17 @@ fn get_str(start: u32, end: u32) -> &'static str {
 
 //NOTE: We would only need 4-byte alignment, but 16-byte is the smallest alignment interval that
 //the align_data crate offers.
-//
-//NOTE 2: as_u32_slice() cannot be made const because from_raw_parts() is not const, so we have to
-//use it on every read access to the respective arrays.
 
 use align_data::{include_aligned, Align16};
 
-fn as_u32_slice(input: &'static [u8]) -> &'static [u32] {
+const fn as_u32_slice(input: &'static [u8]) -> &'static [u32] {
     unsafe {
         let ptr = input.as_ptr() as *const u32;
         std::slice::from_raw_parts(ptr, input.len() / 4)
     }
 }
 
-static ALL_ENTRY_OFFSETS: &[u8] =
-    include_aligned!(Align16, concat!(env!("OUT_DIR"), "/entry_offsets.dat"));
-static ALL_DATA: &[u8] = include_aligned!(Align16, concat!(env!("OUT_DIR"), "/payload.dat"));
+static ALL_ENTRY_OFFSETS: &[u32] =
+    as_u32_slice(include_aligned!(Align16, concat!(env!("OUT_DIR"), "/entry_offsets.dat")));
+static ALL_DATA: &[u32] = as_u32_slice(include_aligned!(Align16, concat!(env!("OUT_DIR"), "/payload.dat")));
 static ALL_TEXTS: &str = include_str!(concat!(env!("OUT_DIR"), "/strings.txt"));
