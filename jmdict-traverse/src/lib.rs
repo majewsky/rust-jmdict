@@ -140,7 +140,7 @@ impl<'a> Object<'a> for RawEntry<'a> {
             ent_seq: obj["n"].as_u32().unwrap(),
             k_ele: RawKanjiElement::collect(&obj["K"], opts),
             r_ele: RawReadingElement::collect_or_none(&obj["R"], opts)?,
-            sense: RawSense::collect_or_none(&obj["S"], opts)?,
+            sense: merge_language_grouped_senses(&obj["S"], opts)?,
         })
     }
 }
@@ -295,6 +295,58 @@ impl<'a> Object<'a> for RawGloss<'a> {
             lang: GlossLanguage::from_obj(&obj["l"], opts)?,
             g_type: optional_enum(&obj["g_type"], "", "GlossType"),
         })
+    }
+}
+
+/// Merges language-grouped senses from the new JMdict format.
+/// The new format has separate sense objects for each language's glosses.
+/// This function merges them into proper senses.
+fn merge_language_grouped_senses<'a>(
+    sense_array: &'a JsonValue,
+    opts: &'_ Options,
+) -> Option<Vec<RawSense<'a>>> {
+    let mut result = Vec::new();
+    let mut current_sense: Option<RawSense<'a>> = None;
+    
+    for sense_obj in sense_array.members() {
+        // If this element has POS info, it starts a new semantic sense
+        if !sense_obj["p"].is_null() {
+            // Save previous sense if any
+            if let Some(s) = current_sense.take() {
+                if !s.gloss.is_empty() {
+                    result.push(s);
+                }
+            }
+            // Start new sense with full metadata
+            current_sense = RawSense::from_obj(sense_obj, opts);
+        } else if let Some(ref mut sense) = current_sense {
+            // This is a language-specific gloss group for the current sense
+            // Only collect glosses, ignoring other fields that should be empty
+            if let Some(glosses) = RawGloss::collect_or_none(&sense_obj["G"], opts) {
+                sense.gloss.extend(glosses);
+            }
+        } else {
+            // Orphaned gloss group without a preceding sense with POS
+            // Create a minimal sense for it
+            if let Some(sense) = RawSense::from_obj(sense_obj, opts) {
+                if !sense.gloss.is_empty() {
+                    result.push(sense);
+                }
+            }
+        }
+    }
+    
+    // Don't forget the last sense
+    if let Some(s) = current_sense {
+        if !s.gloss.is_empty() {
+            result.push(s);
+        }
+    }
+    
+    if result.is_empty() {
+        None
+    } else {
+        Some(result)
     }
 }
 
